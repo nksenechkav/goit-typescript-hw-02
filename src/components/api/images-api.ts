@@ -1,8 +1,23 @@
-import axios from "axios";
-import { AxiosResponse } from "axios";
+import axios, { AxiosResponse } from "axios";
 
-export const fetchImagesWithQuery = async <T>(query: string, page: number): Promise<T> => {
-  const response: AxiosResponse<T> = await axios.get('https://api.unsplash.com/search/photos', {
+interface ImageResult {
+  id: string;
+  urls: {
+    regular: string;
+    small: string;
+  };
+  alt_description: string;
+  likes: number | null;
+  author: string;
+}
+
+interface ImageSearchResult {
+  results: ImageResult[];
+  total_pages: number;
+}
+
+export const fetchImagesWithQuery = async (query: string, page: number): Promise<ImageSearchResult> => {
+  const response: AxiosResponse<ImageSearchResult> = await axios.get('https://api.unsplash.com/search/photos', {
     params: {
       query: query,
       page: page,

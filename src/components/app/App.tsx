@@ -1,0 +1,124 @@
+import { useState, useRef } from 'react';
+import { useEffect } from 'react';
+import SearchBar from '../searchBar/SearchBar';
+import ImageGallery from '../imageGallery/ImageGallery';
+import { fetchImagesWithQuery } from '../api/images-api';
+import ErrorMessage from '../error/ErrorMessage';
+import LoaderComponent from '../loader/LoaderComponent';
+import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
+import ImageModal from '../imageModal/ImageModal';
+
+import './App.css';
+
+interface Image {
+  id: string;
+  urls: {
+    regular: string;
+    small: string;
+  };
+  alt_description: string;
+  likes: number | null;
+  author: string;
+}
+
+interface ModalContent {
+  modal: string;
+  alt_description: string;
+  likes: number | null;
+  author: string;
+}
+
+function App() {
+  const [images, setImages] = useState<Image[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [error, setError] = useState<boolean>(false);
+  const [showBtn, setShowBtn] = useState<boolean>(false);
+  const [query, setQuery] = useState<string>('');
+  const [page, setPage] = useState<number>(1);
+  const [totalPages, setTotalPages] = useState<number>(1);
+  const [isOpen, setIsOpen] = useState<boolean>(false);
+  const [modalContent, setModalContent] = useState<ModalContent>({
+    modal: '',
+    alt_description: '',
+    likes: null,
+    author: ''
+  });
+  const loadMoreBtnRef = useRef<HTMLDivElement>(null);
+
+  const onSubmit = (query: string) => {
+    setImages([]);
+    setTotalPages(1);
+    setPage(1);
+    setQuery(query);
+  }
+
+  const onLoadMore = () => {
+    setPage((prevPage) => (prevPage ? prevPage + 1 : 1));
+  }
+
+  useEffect(() => {
+    if (!query) return;
+    async function fetchImages() {
+      try {
+        setError(false);
+        setLoading(true);
+        const data = await fetchImagesWithQuery(query, page);
+        if (!data || data.results.length === 0) {
+          return;
+        }
+        setTotalPages(data.total_pages);
+        setImages((prevImages) => [...prevImages, ...data.results]);
+        setShowBtn(data.total_pages > page);
+      } catch (err: unknown) {
+        setError(true);
+        console.log((err as Error).message);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchImages();
+  }, [query, page]);
+
+  useEffect(() => {
+    if (loadMoreBtnRef.current) {
+      loadMoreBtnRef.current.scrollIntoView({ behavior: 'smooth' });
+    }
+  }, [images]);
+
+  function openModal() {
+    setIsOpen(true);
+  }
+
+  function closeModal() {
+    setModalContent({
+      modal: '',
+      alt_description: '',
+      likes: null,
+      author: ''
+    });
+    setIsOpen(false);
+  }
+
+  function clickOpenModal(content: ModalContent) {
+    setModalContent(content);
+    openModal();
+  }
+
+  return (
+    <div className='gallery-container'>
+      <SearchBar onSearch={onSubmit} />
+      {loading && <LoaderComponent />}
+      {error && <ErrorMessage />}
+      {images.length > 0 && <ImageGallery images={images} onImgClick={clickOpenModal} />}
+      <ImageModal
+        isOpen={isOpen}
+        onRequestClose={closeModal}
+        content={modalContent}
+      />
+      {showBtn && page < totalPages && <LoadMoreBtn onLoadMore={onLoadMore} />}
+      <div ref={loadMoreBtnRef} />
+    </div>
+  );
+}
+
+export default App;
