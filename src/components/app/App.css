@@ -4,7 +4,6 @@
 
 .gallery-container {
   margin: 0 auto;
-  background-color: aliceblue;
   max-width: 1440px;
   display: flex;
   flex-direction: column;

@@ -2,7 +2,7 @@ import { useState, useRef } from 'react'
 import { useEffect } from 'react';
 import SearchBar from '../searchBar/SearchBar'
 import ImageGallery from '../imageGallery/ImageGallery'
-import { fetchImagesWithQuery } from '../api/images-api';
+import { fetchImagesWithQuery } from '../api/images-api.ts';
 import ErrorMessage from '../error/ErrorMessage'
 import LoaderComponent from '../loader/LoaderComponent';
 import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
