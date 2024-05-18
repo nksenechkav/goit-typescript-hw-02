@@ -8,7 +8,7 @@ import ErrorMessage from '../error/ErrorMessage';
 import LoaderComponent from '../loader/LoaderComponent';
 import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
 import ImageModal from '../imageModal/ImageModal';
-import { Image } from '../types';
+import { Image } from '../interfaceImage';
 
 
 interface ModalContent {

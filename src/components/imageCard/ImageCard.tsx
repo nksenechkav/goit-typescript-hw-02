@@ -1,6 +1,6 @@
 import React from 'react';
 import css from './ImageCard.module.scss';
-import { Image } from '../types';
+import { Image } from '../interfaceImage';
 
 interface ImageCardProps {
     image: Image;
