@@ -1,3 +1,4 @@
+import './App.css';
 import { useState, useRef } from 'react';
 import { useEffect } from 'react';
 import SearchBar from '../searchBar/SearchBar';
@@ -7,19 +8,8 @@ import ErrorMessage from '../error/ErrorMessage';
 import LoaderComponent from '../loader/LoaderComponent';
 import LoadMoreBtn from '../loadMoreBtn/LoadMoreBtn';
 import ImageModal from '../imageModal/ImageModal';
+import { Image } from '../types';
 
-import './App.css';
-
-interface Image {
-  id: string;
-  urls: {
-    regular: string;
-    small: string;
-  };
-  alt_description: string;
-  likes: number | null;
-  author: string;
-}
 
 interface ModalContent {
   modal: string;
